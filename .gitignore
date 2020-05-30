@@ -228,5 +228,5 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # My config
-config.py
+configurations.yaml
 .idea
