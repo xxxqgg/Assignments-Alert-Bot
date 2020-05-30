@@ -26,32 +26,32 @@ def all(update, context):
 
 # Add Something
 def add(update, context):
+    
     for arg in context.args:
         print(arg)
 
 
 
-updater = Updater(config.token, use_context=True)
+if __name__ == '__main__':
+    updater = Updater(config.token, use_context=True)
 
-updater.dispatcher.add_handler(CommandHandler('hello', hello))
-updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(
-    CommandHandler(
-        'today',
-        today,
-        pass_args = True
+    updater.dispatcher.add_handler(CommandHandler('hello', hello))
+    updater.dispatcher.add_handler(CommandHandler('start', start))
+    updater.dispatcher.add_handler(
+        CommandHandler(
+            'today',
+            today,
+            pass_args=True
+        )
     )
-)
 
-updater.dispatcher.add_handler(
-    CommandHandler(
-        'add',
-        add,
-        pass_args = True
+    updater.dispatcher.add_handler(
+        CommandHandler(
+            'add',
+            add,
+            pass_args=True
+        )
     )
-)
 
-
-
-updater.start_polling()
-updater.idle()
+    updater.start_polling()
+    updater.idle()
