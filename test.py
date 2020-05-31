@@ -1,7 +1,7 @@
 from telegram.ext import Updater, CommandHandler
 import config
 from Assignment import Assignment
-from datetime import datetime
+from datetime import datetime, time, timezone
 from dateutil import parser
 
 assignment_key = "assignments"
@@ -29,15 +29,29 @@ def today(update, context):
 # Display all assignments
 def all(update, context):
     if assignment_key not in context.chat_data.keys() or len(context.chat_data.get(assignment_key)) <= 0:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="现在没有作业 ;-)")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="目前没有作业 ;-)")
         return
-    reply_message = "现在有{}项作业 \n".format(len(context.chat_data.get(assignment_key)))
+    reply_message = "目前有{}项作业 \n".format(len(context.chat_data.get(assignment_key)))
     assignments = context.chat_data.get(assignment_key)
 
     for assignment in context.chat_data.get(assignment_key):
         reply_message += str(assignment)
         reply_message += "\n"
     context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
+
+
+# Daily Alarm
+def update_repeatment(update, context):
+    if 'job' in context.chat_data:
+        old_job = context.chat_data['job']
+        old_job.schedule_removal()
+    new_job = context.job_queue.run_daily(
+        callback=all,
+        time=time(14, 33, 0)
+    )
+    print("add a new job")
+    context.chat_data['jpb'] = new_job
+
 
 
 # Add Something
@@ -49,6 +63,8 @@ def add(update, context):
         context.chat_data.get(assignment_key).append(assignment)
     else:
         context.chat_data[assignment_key] = [assignment]
+
+    update_repeatment(update, context)
 
     # for arg in context.args:
     #     print(arg)
