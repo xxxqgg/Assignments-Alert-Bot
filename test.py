@@ -49,7 +49,7 @@ def update_repeatment(update, context):
         callback=all,
         time=time(14, 33, 0)
     )
-    print("add a new job")
+    # print("add a new job")
     context.chat_data['jpb'] = new_job
 
 
@@ -64,7 +64,7 @@ def add(update, context):
     else:
         context.chat_data[assignment_key] = [assignment]
 
-    update_repeatment(update, context)
+    # update_repeatment(update, context)
 
     # for arg in context.args:
     #     print(arg)
