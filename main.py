@@ -1,4 +1,4 @@
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, PicklePersistence
 from telegram.ext import CallbackContext
 import config
 from Assignment import Assignment
@@ -84,7 +84,8 @@ def add(update, context):
 
 
 if __name__ == '__main__':
-    updater = Updater(config.token, use_context=True)
+    persistence = PicklePersistence(filename='bot_data.dat')
+    updater = Updater(config.token, use_context=True, persistence=persistence)
 
     updater.dispatcher.add_handler(CommandHandler('hello', hello))
     updater.dispatcher.add_handler(CommandHandler('start', start))
