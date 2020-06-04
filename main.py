@@ -112,7 +112,7 @@ if __name__ == '__main__':
         )
     )
     job_queue = updater.job_queue
-    job_queue.run_repeating(daily_assignment_alert, interval=10, first=0)
-
+    # job_queue.run_repeating(daily_assignment_alert, interval=10, first=0)
+    job_queue.run_daily(daily_assignment_alert, time=parser.parse("00:00").time(), name="daily alert")
     updater.start_polling()
     updater.idle()
