@@ -1,4 +1,5 @@
 from telegram.ext import Updater, CommandHandler
+from telegram.ext import CallbackContext
 import config
 from Assignment import Assignment
 from datetime import datetime, time, timezone
@@ -25,18 +26,20 @@ def today(update, context):
     arg = context.args[0]
     print("Here " + arg)
 
+def get_assignments(assignments):
+    if assignments is None or len(assignments) == 0:
+        return "目前没有作业 ;-)"
+    message = "目前有{}项作业 \n".format(len(assignments))
+    for assignment in assignments:
+        message += str(assignment)
+        message += "\n"
+    return message
+
 
 # Display all assignments
 def all(update, context):
-    if assignment_key not in context.chat_data.keys() or len(context.chat_data.get(assignment_key)) <= 0:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="目前没有作业 ;-)")
-        return
-    reply_message = "目前有{}项作业 \n".format(len(context.chat_data.get(assignment_key)))
     assignments = context.chat_data.get(assignment_key)
-
-    for assignment in context.chat_data.get(assignment_key):
-        reply_message += str(assignment)
-        reply_message += "\n"
+    reply_message = get_assignments(assignments)
     context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
 
 
@@ -53,6 +56,16 @@ def update_repeatment(update, context):
     context.chat_data['jpb'] = new_job
 
 
+def daily_assignment_alert(context: CallbackContext):
+    dp = context.dispatcher
+    for chat_id, chat_data in dp.chat_data.items():
+        print(chat_data)
+        reply_message = "~每日作业提醒~\n"
+        assignments = chat_data.get(assignment_key)
+        reply_message += get_assignments(assignments)
+        context.bot.send_message(chat_id=chat_id, text=reply_message)
+
+
 
 # Add Something
 def add(update, context):
@@ -65,9 +78,9 @@ def add(update, context):
         context.chat_data[assignment_key] = [assignment]
 
     # update_repeatment(update, context)
+    reply_message = "{}\nsuccessfully added.".format(str(assignment))
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
-    # for arg in context.args:
-    #     print(arg)
 
 
 if __name__ == '__main__':
@@ -98,5 +111,8 @@ if __name__ == '__main__':
             pass_args=True
         )
     )
+    job_queue = updater.job_queue
+    job_queue.run_repeating(daily_assignment_alert, interval=10, first=0)
+
     updater.start_polling()
     updater.idle()
