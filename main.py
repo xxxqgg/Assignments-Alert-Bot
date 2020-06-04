@@ -6,6 +6,8 @@ from datetime import datetime, time, timezone
 from dateutil import parser
 
 assignment_key = "assignments"
+
+
 # Examples
 
 # Reply a message, will reply (which will notify) the person who sends the command.
@@ -26,6 +28,7 @@ def today(update, context):
     arg = context.args[0]
     print("Here " + arg)
 
+
 def get_assignments(assignments):
     if assignments is None or len(assignments) == 0:
         return "目前没有作业 ;-)"
@@ -40,7 +43,7 @@ def get_assignments(assignments):
 def all(update, context):
     assignments = context.chat_data.get(assignment_key)
     reply_message = get_assignments(assignments)
-    context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
 # Daily Alarm
@@ -66,7 +69,6 @@ def daily_assignment_alert(context: CallbackContext):
         context.bot.send_message(chat_id=chat_id, text=reply_message)
 
 
-
 # Add Something
 def add(update, context):
     # title = context.args[0]
@@ -80,7 +82,6 @@ def add(update, context):
     # update_repeatment(update, context)
     reply_message = "{}\nsuccessfully added.".format(str(assignment))
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
-
 
 
 if __name__ == '__main__':
