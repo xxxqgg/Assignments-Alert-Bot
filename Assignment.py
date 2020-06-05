@@ -9,4 +9,6 @@ class Assignment:
         Assignment._id_index += 1
 
     def __str__(self):
-        return str(self.id) + "-" + self.title + " " + str(self.due_time)
+        sdt = self.due_time
+        str_time = str(sdt.month).zfill(2) + "-" + str(sdt.day).zfill(2) + " " + str(sdt.hour).zfill(2) + ":" + str(sdt.minute).zfill(2)
+        return str(self.id) + "-" + self.title + " " + str_time
