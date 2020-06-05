@@ -123,10 +123,9 @@ if __name__ == '__main__':
         CommandHandler(
             'check',
             check,
-            pass_args = True
+            pass_args=True
         )
     )
-
 
     job_queue = updater.job_queue
     # job_queue.run_repeating(daily_assignment_alert, interval=10, first=0)
