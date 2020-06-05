@@ -1,10 +1,13 @@
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, PicklePersistence
+from telegram.ext import CallbackContext
 import config
 from Assignment import Assignment
 from datetime import datetime, time, timezone
 from dateutil import parser
 
 assignment_key = "assignments"
+
+
 # Examples
 
 # Reply a message, will reply (which will notify) the person who sends the command.
@@ -26,18 +29,21 @@ def today(update, context):
     print("Here " + arg)
 
 
+def get_assignments(assignments):
+    if assignments is None or len(assignments) == 0:
+        return "目前没有作业 ;-)"
+    message = "目前有{}项作业 \n".format(len(assignments))
+    for assignment in assignments:
+        message += str(assignment)
+        message += "\n"
+    return message
+
+
 # Display all assignments
 def all(update, context):
-    if assignment_key not in context.chat_data.keys() or len(context.chat_data.get(assignment_key)) <= 0:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="目前没有作业 ;-)")
-        return
-    reply_message = "目前有{}项作业 \n".format(len(context.chat_data.get(assignment_key)))
     assignments = context.chat_data.get(assignment_key)
-
-    for assignment in context.chat_data.get(assignment_key):
-        reply_message += str(assignment)
-        reply_message += "\n"
-    context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
+    reply_message = get_assignments(assignments)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
 # Daily Alarm
@@ -53,6 +59,15 @@ def update_repeatment(update, context):
     context.chat_data['jpb'] = new_job
 
 
+def daily_assignment_alert(context: CallbackContext):
+    dp = context.dispatcher
+    for chat_id, chat_data in dp.chat_data.items():
+        print(chat_data)
+        reply_message = "~每日作业提醒~\n"
+        assignments = chat_data.get(assignment_key)
+        reply_message += get_assignments(assignments)
+        context.bot.send_message(chat_id=chat_id, text=reply_message)
+
 
 # Add Something
 def add(update, context):
@@ -65,9 +80,8 @@ def add(update, context):
         context.chat_data[assignment_key] = [assignment]
 
     # update_repeatment(update, context)
-
-    # for arg in context.args:
-    #     print(arg)
+    reply_message = "{}\nsuccessfully added.".format(str(assignment))
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
 # Check the Assignment
@@ -76,7 +90,8 @@ def check(update, context):
 
 
 if __name__ == '__main__':
-    updater = Updater(config.token, use_context=True)
+    persistence = PicklePersistence(filename='bot_data.dat')
+    updater = Updater(config.token, use_context=True, persistence=persistence)
 
     updater.dispatcher.add_handler(CommandHandler('hello', hello))
     updater.dispatcher.add_handler(CommandHandler('start', start))
@@ -113,5 +128,8 @@ if __name__ == '__main__':
     )
 
 
+    job_queue = updater.job_queue
+    # job_queue.run_repeating(daily_assignment_alert, interval=10, first=0)
+    job_queue.run_daily(daily_assignment_alert, time=parser.parse("00:00").time(), name="daily alert")
     updater.start_polling()
     updater.idle()
