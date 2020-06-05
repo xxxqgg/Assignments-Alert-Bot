@@ -70,6 +70,11 @@ def add(update, context):
     #     print(arg)
 
 
+# Check the Assignment
+def check(update, context):
+    print("Check")
+
+
 if __name__ == '__main__':
     updater = Updater(config.token, use_context=True)
 
@@ -98,5 +103,15 @@ if __name__ == '__main__':
             pass_args=True
         )
     )
+
+    updater.dispatcher.add_handler(
+        CommandHandler(
+            'check',
+            check,
+            pass_args = True
+        )
+    )
+
+
     updater.start_polling()
     updater.idle()
