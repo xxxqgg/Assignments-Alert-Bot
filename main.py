@@ -71,15 +71,12 @@ def daily_assignment_alert(context: CallbackContext):
 
 # Add Something
 def add(update, context):
-    # title = context.args[0]
-    # due_time =
     assignment = Assignment(context.args[0], parser.parse(" ".join(context.args[1:])))
     if assignment_key in context.chat_data.keys():
         context.chat_data.get(assignment_key).append(assignment)
     else:
         context.chat_data[assignment_key] = [assignment]
 
-    # update_repeatment(update, context)
     reply_message = "{}\nsuccessfully added.".format(str(assignment))
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
@@ -129,6 +126,8 @@ if __name__ == '__main__':
 
     job_queue = updater.job_queue
     # job_queue.run_repeating(daily_assignment_alert, interval=10, first=0)
-    job_queue.run_daily(daily_assignment_alert, time=parser.parse("00:00").time(), name="daily alert")
+    job_queue.run_daily(daily_assignment_alert,
+                        time=parser.parse("8:00").time().replace(tzinfo=config.timezone),
+                        name="daily alert")
     updater.start_polling()
     updater.idle()
