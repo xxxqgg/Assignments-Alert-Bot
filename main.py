@@ -1,7 +1,7 @@
 from telegram.ext import Updater, CommandHandler, PicklePersistence
 from telegram.ext import CallbackContext
 import config
-from Assignment import Assignment
+from Assignment import Assignment, Assignments
 from datetime import datetime, time, timezone
 from dateutil import parser
 
@@ -29,7 +29,7 @@ def today(update, context):
     print("Here " + arg)
 
 
-def get_assignments(assignments):
+def get_assignments(assignments: Assignments):
     if assignments is None or len(assignments) == 0:
         return "目前没有作业 ;-)"
     message = "目前有{}项作业 \n".format(len(assignments))
@@ -72,12 +72,39 @@ def daily_assignment_alert(context: CallbackContext):
 # Add Something
 def add(update, context):
     assignment = Assignment(context.args[0], parser.parse(" ".join(context.args[1:])))
-    if assignment_key in context.chat_data.keys():
-        context.chat_data.get(assignment_key).append(assignment)
-    else:
-        context.chat_data[assignment_key] = [assignment]
-
+    if assignment_key not in context.chat_data.keys():
+        context.chat_data[assignment_key] = Assignments()
+    context.chat_data.get(assignment_key).add(assignment)
     reply_message = "{}\nsuccessfully added.".format(str(assignment))
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
+
+
+def remove(update, context):
+    id = int(context.args[0])
+    if assignment_key not in context.chat_data.keys():
+        # This should be an error because there is no assignments object for this user.
+        raise KeyError("This conversation don't have a assignments object")
+
+    assignments = context.chat_data.get(assignment_key)
+    try:
+        obj = assignments.remove(id)
+    except KeyError:
+        reply_message = "id: {} not found.".format(id)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
+        return
+
+    reply_message = "{}\nsuccessfully removed.".format(str(obj))
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
+
+
+def detail(update, context):
+    id = int(context.args[0])
+    if assignment_key not in context.chat_data.keys():
+        # This should be an error because there is no assignments object for this user.
+        raise KeyError("This conversation don't have a assignments object")
+
+    assignments = context.chat_data.get(assignment_key)
+    reply_message = assignments[id].detail_str
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
@@ -123,7 +150,20 @@ if __name__ == '__main__':
             pass_args=True
         )
     )
-
+    updater.dispatcher.add_handler(
+        CommandHandler(
+            'remove',
+            remove,
+            pass_args=True
+        )
+    )
+    updater.dispatcher.add_handler(
+        CommandHandler(
+            'detail',
+            detail,
+            pass_args=True
+        )
+    )
     job_queue = updater.job_queue
     # job_queue.run_repeating(daily_assignment_alert, interval=10, first=0)
     job_queue.run_daily(daily_assignment_alert,
