@@ -1,3 +1,4 @@
 TelegramBot:
   - name: PutYourConfigNameHere
     token: PutYourTokenHere
+    time_zone: PutYourTimeZoneHere
