@@ -44,7 +44,8 @@ class Assignments:
         if id not in self.data.keys():
             raise KeyError("id({} is not in the current data)".format(id))
         obj = self.data.pop(id)
-        self.first_viable_index = id
+        if self.first_viable_index > id:
+            self.first_viable_index = id
         return obj
 
     def __getitem__(self, item):
