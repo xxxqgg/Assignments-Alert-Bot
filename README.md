@@ -28,5 +28,5 @@ For example, a configuration would look like:
     ```
 4. Run the bot
     ```bash
-    python3 main.py
+    python3 src/main.py
     ```
