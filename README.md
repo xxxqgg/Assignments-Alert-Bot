@@ -6,6 +6,16 @@ A bot used for grouping assignments and TODOs.
 Based on [python-telegram-bot](https://python-telegram-bot.org/)
 
 ## Usage
+- /all: Display all the assignments.
+- /add: Add an assignment. Arguments: /add [AssignmentName] [Date and time]. 
+    There are certain limitations to this command:
+    1. There MUST BE NO SPACE in AssignmentName
+    2. The date must be in format like MM-dd
+    3. The time must be in format like hh:mm:ss
+- /remove: Remove an assignment. Arguments: /remove [assignment_id]
+- /stop: Stop the bot from sending daily alerts. There must be no assignments left to use this command.
+
+## Deployment
 Feel free to use the bot directly: follow [@AssignmentsAlertBot](https://telegram.me/AssignmentsAlertBot)
 
 Or you can run the bot on your own server:
