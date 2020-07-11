@@ -6,7 +6,7 @@ import os
 import time
 import pytz
 
-with open("../configurations.yaml", 'r') as stream:
+with open("configurations.yaml", 'r') as stream:
     try:
         data = yaml.safe_load(stream)
         token = data.get('TelegramBot')[0].get('token')
