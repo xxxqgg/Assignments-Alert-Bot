@@ -40,31 +40,19 @@ def get_assignments(assignments: Assignments):
 
 
 # Display all assignments
-def all(update, context):
+def all_assignments(update, context):
     assignments = context.chat_data.get(assignment_key)
     reply_message = get_assignments(assignments)
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
-# Daily Alarm
-def update_repeatment(update, context):
-    if 'job' in context.chat_data:
-        old_job = context.chat_data['job']
-        old_job.schedule_removal()
-    new_job = context.job_queue.run_daily(
-        callback=all,
-        time=time(14, 33, 0)
-    )
-    # print("add a new job")
-    context.chat_data['jpb'] = new_job
-
-
 def daily_assignment_alert(context: CallbackContext):
     dp = context.dispatcher
     for chat_id, chat_data in dp.chat_data.items():
-        print(chat_data)
         reply_message = "~每日作业提醒~\n"
         assignments = chat_data.get(assignment_key)
+        if assignments is None:
+            continue
         reply_message += get_assignments(assignments)
         context.bot.send_message(chat_id=chat_id, text=reply_message)
 
@@ -108,6 +96,26 @@ def detail(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
+def stop(update: Updater, context):
+    """
+    Stop the bot from sending alerts if there isn't any Assignment left.
+    :param update:
+    :param context:
+    :return:
+    """
+    if assignment_key not in context.chat_data.keys():
+        # This should be an error because there is no assignments object for this user.
+        raise KeyError("This conversation don't have a assignments object")
+    assignments = context.chat_data.get(assignment_key)
+    if len(assignments) > 0:
+        reply_text = "There is assignment left. Please empty all the assignments before stopping the bot."
+        context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
+    else:
+        context.chat_data.pop(assignment_key)
+        reply_text = "Bot successfully stopped."
+        context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
+
+
 # Check the Assignment
 def check(update, context):
     print("Check")
@@ -138,7 +146,7 @@ if __name__ == '__main__':
     updater.dispatcher.add_handler(
         CommandHandler(
             'all',
-            all,
+            all_assignments,
             pass_args=True
         )
     )
@@ -161,6 +169,13 @@ if __name__ == '__main__':
         CommandHandler(
             'detail',
             detail,
+            pass_args=True
+        )
+    )
+    updater.dispatcher.add_handler(
+        CommandHandler(
+            'stop',
+            stop,
             pass_args=True
         )
     )

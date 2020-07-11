@@ -23,7 +23,6 @@ class Assignments:
     """
     A class used for storing  Assignment objects
     """
-
     def __init__(self):
         self.data = dict()
         self.first_viable_index = 0
