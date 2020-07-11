@@ -14,6 +14,13 @@ To run the bot on your own server, follow the following steps:
     ```
 2. Make a copy of ```configurations-template.yaml``` and name it 
 to ```configurations.yaml```. Change the configurations accordingly.
+For example, a configuration would look like:
+    ```yaml
+    TelegramBot:
+      - name: AssignmentBot
+        token: 1262663214:AAFxqx4reBnm2uR3ZPUqotBZJ7HYR1Pxsdg
+        time_zone: Asia/Shanghai
+    ```
 3. Install pip packages
     ```bash
     pip install -r requirements.txt
