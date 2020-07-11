@@ -1,7 +1,7 @@
 from telegram.ext import Updater, CommandHandler, PicklePersistence
 from telegram.ext import CallbackContext
-import config
-from Assignment import Assignment, Assignments
+from . import config
+from .Assignment import Assignment, Assignments
 from datetime import datetime, time, timezone
 from dateutil import parser
 
