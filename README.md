@@ -1,13 +1,14 @@
 # Assignments Alert Bot
+A bot used for grouping assignments and TODOs.
 
 [@AssignmentsAlertBot](https://telegram.me/AssignmentsAlertBot)
 
 Based on [python-telegram-bot](https://python-telegram-bot.org/)
 
 ## Usage
-To directly use the bot: follow [@AssignmentsAlertBot](https://telegram.me/AssignmentsAlertBot)
+Feel free to use the bot directly: follow [@AssignmentsAlertBot](https://telegram.me/AssignmentsAlertBot)
 
-To run the bot on your own server, follow the following steps:
+Or you can run the bot on your own server:
 1. clone the repository on the server
     ```bash
     git clone git@github.com:xxxqgg/Assignments-Alert-Bot.git
@@ -18,7 +19,7 @@ For example, a configuration would look like:
     ```yaml
     TelegramBot:
       - name: AssignmentBot
-        token: 1262663214:AAFxqx4reBnm2uR3ZPUqotBZJ7HYR1Pxsdg
+        token: 1231231231:AAFxqx4reBnm2uR3ZPUqotBZJ7HYR1Pxsdg
         time_zone: Asia/Shanghai
     ```
 3. Install pip packages
