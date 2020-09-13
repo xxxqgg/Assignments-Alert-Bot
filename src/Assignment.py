@@ -1,7 +1,7 @@
 class Assignment:
     _id_index = 0
 
-    def __init__(self, title, due_time, *args, **kwargs):
+    def __init__(self, title: str, due_time, *args, **kwargs):
         self.id = Assignment._id_index
         self.title = title
         self.due_time = due_time
@@ -23,9 +23,10 @@ class Assignments:
     """
     A class used for storing  Assignment objects
     """
+
     def __init__(self):
         self.data = dict()
-        self.first_viable_index = 0
+        self._first_viable_index = 0
 
     def add(self, obj: Assignment):
         id = self.__get_first_viable_id()
@@ -35,19 +36,19 @@ class Assignments:
         self.data[id] = obj
 
     def __get_first_viable_id(self):
-        while self.first_viable_index in self.data.keys():
-            self.first_viable_index += 1
-        return self.first_viable_index
+        while self._first_viable_index in self.data.keys():
+            self._first_viable_index += 1
+        return self._first_viable_index
 
     def remove(self, id: int):
         if id not in self.data.keys():
             raise KeyError("id({} is not in the current data)".format(id))
         obj = self.data.pop(id)
-        if self.first_viable_index > id:
-            self.first_viable_index = id
+        if self._first_viable_index > id:
+            self._first_viable_index = id
         return obj
 
-    def __getitem__(self, item):
+    def __getitem__(self, item) -> Assignment:
         return self.data[item]
 
     def __len__(self):

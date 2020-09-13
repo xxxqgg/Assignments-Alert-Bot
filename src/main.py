@@ -1,12 +1,13 @@
 from telegram.ext import Updater, CommandHandler, PicklePersistence
 from telegram.ext import CallbackContext
+from telegram.update import Update
 import config
 from Assignment import Assignment, Assignments
-from datetime import datetime, time, timezone
 from dateutil import parser
+import i18n
 
 assignment_key = "assignments"
-
+locale_key = 'locale'
 
 # Examples
 
@@ -40,7 +41,9 @@ def get_assignments(assignments: Assignments):
 
 
 # Display all assignments
-def all_assignments(update, context):
+def all_assignments(update: Update, context):
+    if locale_key not in context.chat_data.keys():
+        context.chat_data[locale_key] = update.effective_user.language_code
     assignments = context.chat_data.get(assignment_key)
     reply_message = get_assignments(assignments)
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
@@ -49,7 +52,7 @@ def all_assignments(update, context):
 def daily_assignment_alert(context: CallbackContext):
     dp = context.dispatcher
     for chat_id, chat_data in dp.chat_data.items():
-        reply_message = "~每日作业提醒~\n"
+        reply_message = ""
         assignments = chat_data.get(assignment_key)
         if assignments is None:
             continue
@@ -62,6 +65,8 @@ def add(update, context):
     assignment = Assignment(context.args[0], parser.parse(" ".join(context.args[1:])))
     if assignment_key not in context.chat_data.keys():
         context.chat_data[assignment_key] = Assignments()
+    if locale_key not in context.chat_data.keys():
+        context.chat_data[locale_key] = update.effective_user.language_code
     context.chat_data.get(assignment_key).add(assignment)
     reply_message = "{}\nsuccessfully added.".format(str(assignment))
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
@@ -90,13 +95,14 @@ def detail(update, context):
     if assignment_key not in context.chat_data.keys():
         # This should be an error because there is no assignments object for this user.
         raise KeyError("This conversation don't have a assignments object")
-
+    if locale_key not in context.chat_data.keys():
+        context.chat_data[locale_key] = update.effective_user.language_code
     assignments = context.chat_data.get(assignment_key)
     reply_message = assignments[id].detail_str
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
-def stop(update: Updater, context):
+def stop(update, context):
     """
     Stop the bot from sending alerts if there isn't any Assignment left.
     :param update:

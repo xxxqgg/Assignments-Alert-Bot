@@ -1,11 +1,11 @@
 # Load configurations from file
 import yaml
-
-import yaml
 import os
 import time
 import pytz
+import i18n
 
+i18n.config.set("file_format", 'yaml')
 with open("configurations.yaml", 'r') as stream:
     try:
         data = yaml.safe_load(stream)
