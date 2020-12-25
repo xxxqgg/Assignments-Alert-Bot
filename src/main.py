@@ -41,6 +41,7 @@ def get_assignments(assignments: Assignments):
 
 
 # Display all assignments
+#TODO:sort due_time in ascending/descending order 
 def all_assignments(update: Update, context):
     if locale_key not in context.chat_data.keys():
         context.chat_data[locale_key] = update.effective_user.language_code
