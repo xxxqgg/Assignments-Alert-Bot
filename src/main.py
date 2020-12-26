@@ -9,6 +9,7 @@ import i18n
 assignment_key = "assignments"
 locale_key = 'locale'
 
+
 # Examples
 
 # Reply a message, will reply (which will notify) the person who sends the command.
@@ -30,23 +31,31 @@ def today(update, context):
     print("Here " + arg)
 
 
-def get_assignments(assignments: Assignments):
+def get_assignments(assignments: Assignments, descending=False) -> str:
     if assignments is None or len(assignments) == 0:
         return "目前没有作业 ;-)"
     message = "目前有{}项作业 \n".format(len(assignments))
-    for assignment in assignments:
-        message += str(assignment)
-        message += "\n"
+    if descending:
+        assignment_detail = ""
+        for assignment in assignments:
+            assignment_detail = str(assignment) + "\n" + assignment_detail
+        message += assignment_detail
+    else:
+        for assignment in assignments:
+            message += str(assignment)
+            message += "\n"
     return message
 
 
 # Display all assignments
-#TODO:sort due_time in ascending/descending order 
 def all_assignments(update: Update, context):
     if locale_key not in context.chat_data.keys():
         context.chat_data[locale_key] = update.effective_user.language_code
     assignments = context.chat_data.get(assignment_key)
-    reply_message = get_assignments(assignments)
+    if len(context.args) == 1 and context.args[0] == "desc":
+        reply_message = get_assignments(assignments, descending=True)
+    else:
+        reply_message = get_assignments(assignments, descending=False)
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 
