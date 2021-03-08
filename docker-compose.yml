@@ -3,4 +3,4 @@ services:
   todo-bot:
     build: ./
     volumes: 
-      - ./:/var/bot
+      - .:/var/bot

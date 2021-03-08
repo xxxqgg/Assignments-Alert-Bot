@@ -1,5 +1,7 @@
-FROM python:3.9.2-alpine3.12
+FROM python:3.8-buster
 WORKDIR /var/bot/
-RUN apt-get update & pip install -r requirements.txt
-ENTRYPOINT [ "python"]
-CMD [  "src/main.py"  ]
+COPY ./requirements.txt /tmp/requirements.txt
+RUN apt-get update & apt-get install libssl-dev libffi-dev 
+RUN pip --version  & pip install -r /tmp/requirements.txt
+#ENTRYPOINT [ "python"]
+CMD [ "python", "src/main.py"  ]
