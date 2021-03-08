@@ -35,7 +35,7 @@ For example, a configuration would look like:
         token: 1231231231:AAFxqx4reBnm2uR3ZPUqotBZJ7HYR1Pxsdg
         time_zone: Asia/Shanghai
     ```
-3. [Install Docker](https://docs.docker.com/engine/install/) on your server if not previously  installed.
+3. Install [Docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) on your server if not previously  installed.
 4. Run via docker:
     ```bash
     docker-compose up -d
