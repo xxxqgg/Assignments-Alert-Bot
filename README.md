@@ -15,13 +15,36 @@ Based on [python-telegram-bot](https://python-telegram-bot.org/)
 - /remove: Remove an assignment. Arguments: /remove [assignment_id]
 - /stop: Stop the bot from sending daily alerts. There must be no assignments left to use this command.
 
-## Deployment
+## Usage
 Feel free to use the bot directly: follow [@AssignmentsAlertBot](https://telegram.me/AssignmentsAlertBot)
 
-Or you can run the bot on your own server:
+### Deployment
+You can run the bot on your own server. There are two methods doing this.
+
+#### Deploy via Docker
 1. clone the repository on the server
     ```bash
-    git clone git@github.com:xxxqgg/Assignments-Alert-Bot.git
+    git clone https://github.com/xxxqgg/Assignments-Alert-Bot.git
+    ```
+2. Make a copy of ```configurations-template.yaml``` and name it 
+to ```configurations.yaml```. Change the configurations accordingly.
+For example, a configuration would look like:
+    ```yaml
+    TelegramBot:
+      - name: AssignmentBot
+        token: 1231231231:AAFxqx4reBnm2uR3ZPUqotBZJ7HYR1Pxsdg
+        time_zone: Asia/Shanghai
+    ```
+3. Install [Docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) on your server if not previously  installed.
+4. Run via docker:
+    ```bash
+    docker-compose up -d
+    ```
+    
+#### Deploy directly
+1. clone the repository on the server
+    ```bash
+    git clone https://github.com/xxxqgg/Assignments-Alert-Bot.git
     ```
 2. Make a copy of ```configurations-template.yaml``` and name it 
 to ```configurations.yaml```. Change the configurations accordingly.
