@@ -15,5 +15,10 @@ with open("configurations.yaml", 'r') as stream:
         if hasattr(time, 'tzset'):
             time.tzset()
         timezone = pytz.timezone(tz)
+        db_user = data.get('Database')[0].get('db_user')
+        db_password = data.get('Database')[0].get('db_password')
+        db_name = data.get('Database')[0].get('db_name')
+        db_url = data.get('Database')[0].get('db_url')
+
     except yaml.YAMLError as exc:
         print(exc)
