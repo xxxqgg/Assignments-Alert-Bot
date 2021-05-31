@@ -137,8 +137,11 @@ def check(update, context):
     print("Check")
 
 
+from persistence import SqlPersistence
+
 if __name__ == '__main__':
-    persistence = PicklePersistence(filename='bot_data.dat')
+    # persistence = PicklePersistence(filename='bot_data.dat')
+    persistence = SqlPersistence()
     updater = Updater(config.token, use_context=True, persistence=persistence)
 
     updater.dispatcher.add_handler(CommandHandler('hello', hello))
